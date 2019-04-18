@@ -10,13 +10,10 @@
 
 ## Table of Contents
 
-1. [Usage](#Usage)
 1. [Requirements](#requirements)
 1. [Development](#development)
+1. [CRUD Routes](#crud_routes)
 
-## Usage
-
-> Some usage instructions
 
 ## Requirements
 
@@ -57,4 +54,15 @@ The CRUD operations supported for each data source are below:
 | READ | /api/:stockId | |
 | UPDATE | /api/:stockId/:field| If a specific field is not desired, /:field can be dropped from the api route|
 | DELETE | /api/stockId/: field| If a specific field is not desired, /:field can be dropped from the api route|
+
+### Price Quotes
+
+| CRUD Operation | API | Notes |
+|----------------|:---:| ----- |
+| CREATE | /api/quotes/create| |
+| READ | /api/:stockId/quotes/:quoteId | If a specific field is not desired, /:quoteId can be dropped from the api route|
+| UPDATE | /api/quotes/:quoteId/:field| If a specific field or quoteId is not desired, /:quoteId and/or /:field can be dropped from the api route|
+| DELETE | /api/quotes/:quoteId/:field| If a specific field or quoteId is not desired, /:quoteId and/or /:field can be dropped from the api route|
+
+
 
