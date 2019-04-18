@@ -8,7 +8,7 @@
   "author": "Muhammad Shehu",
   "license": "MIT",
   "engines": {
-    "node": ">=6.13.0"
+    "node": ">=8.15.0"
   },
   "scripts": {
     "start": "webpack --mode development --watch",
