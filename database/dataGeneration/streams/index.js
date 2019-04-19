@@ -1,24 +1,19 @@
-const { PassThrough } = require('stream');
 const fs = require('fs');
 const zlib = require('zlib');
 
-const infoPass = new PassThrough();
-const gzipInfo = zlib.createGzip();
+const gzip = zlib.createGzip();
 const infoWriter = fs.createWriteStream(__dirname + '/../stockData.csv.gz')
 
-infoPass
-  .pipe(gzipInfo)
+gzip
   .pipe(infoWriter)
   .on('finish', () => console.log('File Written!'));
 
-const quotePass = new PassThrough();
-const quoteCompressor = zlib.createGzip();
-const quoteWriter = fs.createWriteStream(__dirname + '/../stockData.csv.gz')
+const qgzip = zlib.createGzip();
+const quoteWriter = fs.createWriteStream(__dirname + '/../quoteData.csv.gz')
 
-quotePass
-  .pipe(quoteCompressor)
+qgzip
   .pipe(quoteWriter)
   .on('finish', () => console.log('File Written!'));
 
-  module.exports.infoPass = infoPass;
-  module.exports.quotePass = quotePass;
+  module.exports.gzip = gzip;
+  module.exports.qgzip = qgzip;
