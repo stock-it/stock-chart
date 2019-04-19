@@ -14,7 +14,7 @@
     "start": "webpack --mode development --watch",
     "start:server": "nodemon server/index.js",
     "build": "webpack --mode production",
-    "seed": "node database/seed.js",
+    "generate": "node database/dataGeneration/dataGenerator",
     "test": "jest --verbose",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage --colors"
@@ -63,7 +63,6 @@
     "eslint-plugin-react": "^7.11.0",
     "file-loader": "^3.0.1",
     "jest": "^24.5.0",
-    "mongodb-memory-server": "^4.2.1",
     "style-loader": "^0.23.1",
     "supertest": "^4.0.2",
     "webpack": "^4.29.6",
