@@ -1,5 +1,4 @@
 const faker = require('faker');
-const stream = require('./streams/index.js');
 
 const companyData = [
   { id: '001', ticker: 'SNAP', company: 'Snap' },
@@ -133,30 +132,15 @@ const generateTags = (number) => {
   return returnArr;
 }
 
-const generateStocks = (startIndex, endIndex) => {
-  const astream = stream.gzip;
-  astream.write('id, stockId, stockCompany, relatedTags, noOfOwners, recommendationPercent \n');
-  let i = startIndex;
-  function writeToStream () {
+const generateStocks = (startIndex, endIndex, cb, finishCB) => {
+  let data = '';
+  for (let i = startIndex; i < endIndex; i += 1) {
     let stockCompany;
-    let data;
-    let ok = true;
-    do {
-      if (i % 100000 === 0) console.log(i);
-      i < 100 ? (stockCompany = companyData[i].company) : (stockCompany = faker.company.companyName());
-      data = `${i}, ${tickers[i]},${stockCompany},${generateTags(faker.random.number({ min: 0, max: 3 }))},${faker.random.number({ min: 10000, max: 99999999 })},${faker.random.number({ min: 10000, max: 99999999 })}, \n`;
-      if (i === endIndex - 1) {
-        astream.end(data);
-      } else {
-        ok = astream.write(data);
-      }
-      i += 1;
-    } while (i < endIndex && ok);
-    if (i < endIndex) {
-      astream.once('drain', writeToStream);
-    }
+    i < 100 ? (stockCompany = companyData[i].company) : (stockCompany = faker.company.companyName());
+    data += `${i}, ${tickers[i]},${stockCompany},${generateTags(faker.random.number({ min: 0, max: 3 }))},${faker.random.number({ min: 10000, max: 99999999 })},${faker.random.number({ min: 10000, max: 99999999 })}, \n`;
   }
-  writeToStream();
+  cb(data);
+  setTimeout(() => finishCB(), 1000);
 }
 
 module.exports = generateStocks;
