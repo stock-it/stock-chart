@@ -1,28 +1,5 @@
 const faker = require('faker');
 
-module.exports.generateData = (index) => {
-  return {
-    id: companyData[index].id,
-    stockId: companyData[index].ticker,
-    stockInfo: {
-      stockCompany: companyData[index].company,
-      relatedTags: generateTags(generateInBetween(2, 5, 'interger')),
-      noOfOwners: faker.random.number(),
-      recommendationPercent: generateInBetween(30, 90, 'interger'),
-    },
-    stockData: {
-      day: generateDataPoints(),
-      week: generateDataPoints(),
-      month: generateDataPoints(),
-      threeMonth: generateDataPoints(),
-      year: generateDataPoints(),
-      fiveYear: generateDataPoints()
-    },
-    averageStock: generateInBetween(90, 200).toFixed(2),
-    changePercent: generateInBetween(1, 4).toFixed(2)
-  }
-};
-
 const companyData = [
   { id: '001', ticker: 'SNAP', company: 'Snap' },
   { id: '002', ticker: 'TSLA', company: 'Tesla' },
@@ -126,24 +103,25 @@ const companyData = [
   { id: '100', ticker: 'CGC', company:	'Canopy Growth'}
 ];
 
-const generateInBetween = (min, max, type) => {
-  if (type === 'interger') {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min; 
-  } else {
-    return (Math.random() * (max - min)) + min; 
-  }
+const generateTickers = digits => {
+  const allTickers = companyData.map(val => val.ticker);
+  const validator = new Set(allTickers);
+
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+  (function loop(base, i){
+    for (let k = 0; k < possible.length; k++) {
+      if (i > 1) loop( base + possible[k], i-1);
+      else if (!validator.has(base + possible[k])) {
+        allTickers.push( base + possible[k]);
+      } 
+    }
+  })("", digits);
+
+  return allTickers;
 }
-  
-const generateDataPoints = () => {
-  let returnArr = [];
-  returnArr.push(+generateInBetween(50, 200).toFixed(2));
-  for (var i = 0; i < 107; i++) {
-    returnArr.push(Math.abs(generateInBetween(+returnArr[i] - generateInBetween(5, 25, 'interger'), +returnArr[i] + generateInBetween(5, 25, 'interger')).toFixed(2)));
-  }
-  return returnArr;
-}
+
+const tickers = generateTickers(5);
 
 const generateTags = (number) => {
   number = number || 3;
@@ -153,3 +131,16 @@ const generateTags = (number) => {
   }
   return returnArr;
 }
+
+const generateStocks = (startIndex, endIndex, cb, finishCB) => {
+  let data = '';
+  for (let i = startIndex; i < endIndex; i += 1) {
+    let stockCompany;
+    i < 100 ? (stockCompany = companyData[i].company) : (stockCompany = faker.company.companyName());
+    data += `${i}, ${tickers[i]},${stockCompany},${generateTags(faker.random.number({ min: 0, max: 3 }))},${faker.random.number({ min: 10000, max: 99999999 })},${faker.random.number({ min: 10000, max: 99999999 })}, \n`;
+  }
+  cb(data);
+  setTimeout(() => finishCB(), 1000);
+}
+
+module.exports = generateStocks;
