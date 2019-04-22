@@ -31,39 +31,26 @@ const getTimeIntervals = (minInterval, startTime = 0, endTime = 24) => {
 
 const dailyTimeIntervals = getTimeIntervals(5, 9 * 60, 18 * 60);
 
-const generateDailyPrices = (stream, basePrice, stockId) => {
+const generateDailyPrices = (basePrice, stockId) => {
   const { date, month, year } = dayInfo;
 
   let hour, min;
+  let chunk = [];
 
-  let i = 0;
-  function writeToStream() {
-    let ok = true;
-    do {
-      hour = Number(dailyTimeIntervals[i].slice(0,2));
-      hour < 9 ? (hour = hour + 12) : '';
-      min = Number(dailyTimeIntervals[i].slice(3,5));
-      basePrice = basePrice * (faker.random.number({ min: 97, max: 103 }) / 100);
-      let data = `${stockId},${basePrice},${new Date(year, month, date, hour, min)},daily,\n`;
-      if (i === dailyTimeIntervals.length - 1) {
-        stream.write(data);
-      } else {
-        ok = stream.write(data);
-      }
-      i += 1;
-    } while (i < dailyTimeIntervals.length && ok);
-      if (i < dailyTimeIntervals.length) {
-        stream.once('drain', writeToStream);
-      }
+  for (let i = 0; i < dailyTimeIntervals.length; i += 1) {
+    hour = Number(dailyTimeIntervals[i].slice(0,2));
+    hour < 9 ? (hour = hour + 12) : '';
+    min = Number(dailyTimeIntervals[i].slice(3,5));
+    basePrice = basePrice * (faker.random.number({ min: 97, max: 103 }) / 100);
+    chunk.push(`${stockId}|${basePrice}|${new Date(year, month, date, hour, min).toISOString()}|daily\n`);
   }
-  writeToStream();
-  stream.write(`\n`);
+  return chunk.join('');
 }
 
 const weeklyTimeIntervals = getTimeIntervals(10, 9 * 60 + 30, 15 * 60 + 50)
 
-const generateWeeklyPrices = (stream, basePrice, stockId) => {
-  let chunk = '';
+const generateWeeklyPrices = (basePrice, stockId) => {
+  let chunk = [];
   const { date, month, year, day } = dayInfo;
 
   let hour, min;
@@ -78,18 +65,17 @@ const generateWeeklyPrices = (stream, basePrice, stockId) => {
         min = Number(weeklyTimeIntervals[i].slice(3,5));
         basePrice = basePrice * (faker.random.number({ min: 97, max: 103 }) / 100);
 
-        chunk += `${stockId},${basePrice},${new Date(year, month, d, hour, min)},weekly,\n`;
+        chunk.push(`${stockId}|${basePrice}|${new Date(year, month, d, hour, min).toISOString()}|weekly\n`);
       }
     }
   }
-  stream.write(`${chunk} \n`);
-
+  return chunk.join('');
 }
 
 const monthlyTimeIntervals = [10, 11, 12, 13, 14, 15];
 
-const generateMonthlyPrices = (stream, basePrice, stockId) => {
-  let chunk = '';
+const generateMonthlyPrices = (basePrice, stockId) => {
+  let chunk = [];
   const { fullDay } = dayInfo;
 
   for (let d = 30; d > 0; d -= 1) {
@@ -102,16 +88,16 @@ const generateMonthlyPrices = (stream, basePrice, stockId) => {
         let newDate = new Date (date.setHours(monthlyTimeIntervals[i]))
         basePrice = basePrice * (faker.random.number({ min: 97, max: 103 }) / 100);
 
-        chunk += `${stockId},${basePrice},${newDate},monthly,\n`;
+        chunk.push(`${stockId}|${basePrice}|${newDate.toISOString()}|monthly\n`);
       }
     }
   }
-  stream.write(`${chunk} \n`);
+  return chunk.join('');
 }
 
-const generatePricesPerPeriod = (stream, basePrice, stockId, daysBack, interval) => {
+const generatePricesPerPeriod = (basePrice, stockId, daysBack, interval) => {
   const { fullDay } = dayInfo;
-  let chunk = '';
+  let chunk = [];
 
   for (let d = 1; d < daysBack; d += 1) {
     const date = new Date(fullDay - 86400000 * d);
@@ -121,11 +107,10 @@ const generatePricesPerPeriod = (stream, basePrice, stockId, daysBack, interval)
       continue;
     } else {
       basePrice = basePrice * (faker.random.number({ min: 97, max: 103 }) / 100);
-
-      stream.write(`${stockId},${basePrice},${date},${interval},\n`);
+      chunk.push(`${stockId}|${basePrice}|${date.toISOString()}|${interval}\n`)
     }
   }
-  stream.write(`${chunk} \n`);
+  return chunk.join('');
 }
 
 module.exports.generateDailyPrices = generateDailyPrices;

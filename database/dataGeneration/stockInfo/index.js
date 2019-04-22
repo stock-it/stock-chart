@@ -11,12 +11,5 @@ sgzip
   .pipe(infoWriter)
   .on('finish', () => console.log('File Written!'));
 
-// const qgzip = zlib.createGzip();
-// const quoteWriter = fs.createWriteStream(__dirname + '/../quoteData.csv.gz')
-
-// qgzip
-//   .pipe(quoteWriter)
-//   .on('finish', () => console.log('File Written!'));
 
   module.exports.sgzip = sgzip;
-  // module.exports.qgzip = qgzip;

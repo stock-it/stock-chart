@@ -129,18 +129,17 @@ const generateTags = (number) => {
   for (let i = 0; i < number; i++) {
     returnArr.push(faker.fake("{{commerce.department}}"));
   }
-  return returnArr;
+  return `{${returnArr.join(',')}}`;
 }
 
-const generateStocks = (startIndex, endIndex, cb, finishCB) => {
+const generateStocks = (startIndex, endIndex, cb) => {
   let data = '';
   for (let i = startIndex; i < endIndex; i += 1) {
     let stockCompany;
     i < 100 ? (stockCompany = companyData[i].company) : (stockCompany = faker.company.companyName());
-    data += `${i}, ${tickers[i]},${stockCompany},${generateTags(faker.random.number({ min: 0, max: 3 }))},${faker.random.number({ min: 10000, max: 99999999 })},${faker.random.number({ min: 10000, max: 99999999 })}, \n`;
+    data += `${i}|${tickers[i]}|${faker.finance.amount(200, 400, 2)}|${faker.finance.amount(1, 4, 2)}|"${stockCompany}"|${faker.random.number({ min: 10000, max: 99999999 })}|${faker.finance.amount(0, 1, 2)}|${generateTags(faker.random.number({ min: 0, max: 3 }))}\n`;
   }
   cb(data);
-  setTimeout(() => finishCB(), 1000);
 }
 
 module.exports = generateStocks;
