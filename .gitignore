@@ -2,3 +2,4 @@ node_modules/
 database/dataGeneration/quoteData.csv.gz
 database/dataGeneration/stockData.csv.gz
 quoteData.csv
+.vscode/
