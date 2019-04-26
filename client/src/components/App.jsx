@@ -25,13 +25,13 @@ class App extends React.Component {
 
   componentDidMount() {
     const { stockId } = this.props.match ? this.props.match.params : { stockId: null };
-    API.get((stockId && `/api/${stockId}`) || `/api/TSLA`)
+    API.get((stockId && `/api/stocks/${stockId}`) || `/api/stocks/TSLA`)
     .then((response) => {
       this.setState({
-        stockInfo: response.data[0].stockInfo,
-        chartData: response.data[0].stockData,
-        averageStock: response.data[0].averageStock,
-        changePercent: response.data[0].changePercent
+        stockInfo: response.data.stockInfo,
+        chartData: response.data.stockData,
+        averageStock: response.data.averageStock,
+        changePercent: response.data.changePercent
       })
     })
   }

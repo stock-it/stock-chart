@@ -1,8 +1,22 @@
-const mongoose = require('mongoose');
+const { Pool } = require('pg');
 
-const mongoUri = 'mongodb://localhost/stock-chart';
+const { PGHOST, PGUSER, POOLSIZE, PGDATABASE } = process.env;
 
-mongoose.connect(mongoUri);
-const db = mongoose.connection;
+const db = new Pool({
+  host: PGHOST || 'localhost',
+  user: PGUSER || 'RamKhalsa',
+  database: PGDATABASE || 'stock_chart',
+  max: POOLSIZE || 10
+});
 
-module.exports = db;
+(async function() {
+  const client = await db.connect()
+  await client.query('SELECT NOW()')
+  client.release()
+})()
+
+module.exports = {
+  query: (text, params, callback) => {
+    return db.query(text, params, callback)
+  }
+}

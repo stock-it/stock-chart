@@ -103,26 +103,6 @@ const companyData = [
   { id: '100', ticker: 'CGC', company:	'Canopy Growth'}
 ];
 
-const generateTickers = digits => {
-  const allTickers = companyData.map(val => val.ticker);
-  const validator = new Set(allTickers);
-
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-
-  (function loop(base, i){
-    for (let k = 0; k < possible.length; k++) {
-      if (i > 1) loop( base + possible[k], i-1);
-      else if (!validator.has(base + possible[k])) {
-        allTickers.push( base + possible[k]);
-      } 
-    }
-  })("", digits);
-
-  return allTickers;
-}
-
-const tickers = generateTickers(5);
-
 const generateTags = (number) => {
   number = number || 3;
   let returnArr = []
@@ -132,12 +112,27 @@ const generateTags = (number) => {
   return `{${returnArr.join(',')}}`;
 }
 
+const tickerGenerator = (num, length = 5) => {
+  const possibles = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const ticker = [];
+  if (num > 99) {
+    let remainingNum = num - 1;
+    while (ticker.length < length) {
+      ticker.push(possibles[remainingNum % 26]);
+      remainingNum = Math.floor(remainingNum / 26);
+    }
+    return ticker.join('');
+  } else {
+    return companyData[num].ticker;
+  }
+}
+
 const generateStocks = (startIndex, endIndex, cb) => {
   let data = '';
   for (let i = startIndex; i < endIndex; i += 1) {
     let stockCompany;
     i < 100 ? (stockCompany = companyData[i].company) : (stockCompany = faker.company.companyName());
-    data += `${i}|${tickers[i]}|${faker.finance.amount(200, 400, 2)}|${faker.finance.amount(1, 4, 2)}|"${stockCompany}"|${faker.random.number({ min: 10000, max: 99999999 })}|${faker.finance.amount(0, 1, 2)}|${generateTags(faker.random.number({ min: 0, max: 3 }))}\n`;
+    data += `${tickerGenerator(i)}|${faker.finance.amount(200, 400, 2)}|${faker.finance.amount(1, 4, 2)}|"${stockCompany}"|${faker.random.number({ min: 10000, max: 99999999 })}|${faker.finance.amount(0, 1, 2)}|${generateTags(faker.random.number({ min: 0, max: 3 }))}\n`;
   }
   cb(data);
 }

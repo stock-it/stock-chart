@@ -3,7 +3,7 @@ let numCPUs = require('os').cpus().length;
 const generateData = require('./quoteGenerator.js');
 
 numCPUs = 7;
-let numIndices = 75000;
+let numIndices = 750;
 
 if (cluster.isMaster) {
   masterProcess();
@@ -27,7 +27,7 @@ function masterProcess() {
   function handleMessage(msg) {
     if (msg.cmd && msg.cmd === 'writeChunk') {
       if (finishCount === 0 && !writtenHeaders) {
-        sgzip.write('stock_id| price| time_stamp| label\n');
+        sgzip.write('ticker| price| time_stamp| label\n');
         writtenHeaders = true;
       }
       sgzip.write(msg.chunk, 'utf8');
