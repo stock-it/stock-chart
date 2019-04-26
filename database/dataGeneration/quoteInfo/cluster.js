@@ -2,8 +2,8 @@ const cluster = require('cluster');
 let numCPUs = require('os').cpus().length;
 const generateData = require('./quoteGenerator.js');
 
-numCPUs = 8;
-let numIndices = 700;
+numCPUs = 7;
+let numIndices = 75000;
 
 if (cluster.isMaster) {
   masterProcess();
