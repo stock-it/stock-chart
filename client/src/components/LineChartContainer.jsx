@@ -6,17 +6,17 @@ import ToolTip from './ToolTip';
 class LineChartContainer extends React.Component {
   constructor(props) {
     super(props);
-    const { chart, selectedChart } = this.props;
-    this.coordinatedData = this.chartify(chart);
     this.state = {
-      chartData: this.coordinatedData,
-      selectedChartData: null,
-      filter: selectedChart,
       hoverLoc: null,
       activePoint: null
     }
   }
 
+  
+  getCords(e) {
+    e.preventDefault();
+  }
+  
   handleChartHover(hoverLoc, activePoint) {
     const { changePrice } = this.props;
     changePrice(activePoint);
@@ -25,46 +25,19 @@ class LineChartContainer extends React.Component {
       activePoint: activePoint
     })
   }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if(nextProps.selectedChart !== prevState.selectedChart){
-      return { selectedChartData: prevState.chartData[nextProps.selectedChart]};
-    }
-    else return null;
-  }
-
-  componentDidMount() {
-    this.setState((state, props) => ({
-      selectedChartData: state.chartData[props.selectedChart]
-    }))
-  }
-
-  getCords(e) {
-    e.preventDefault();
-  }
-  
-  chartify(chartObj) {
-    var newObj = {};
-    for (var key in chartObj) {
-      newObj[key] = chartObj[key].map((chart, index) => {
-        return {x: index, y: Number(chart)}
-      })
-    }
-    return newObj;
-  }
-
   render() {
-    const { activePoint, selectedChartData, hoverLoc, filter } = this.state
+    const { activePoint, hoverLoc } = this.state;
+    const { chart, selectedChart } = this.props;
     return (
       <React.Fragment>
         <div className='stock-chart-popup'>
-          {hoverLoc && (<ToolTip hoverLoc={hoverLoc} activePoint={activePoint} filter={filter}/>)}
+          {hoverLoc && (<ToolTip hoverLoc={hoverLoc} activePoint={activePoint} filter={selectedChart} />)}
         </div>
         <div id='stock-chart-graph'>
-          {selectedChartData && (
+          {chart && chart[selectedChart] && (
           <LineChart 
-          chartData={selectedChartData} 
-          onChartHover={ (a,b) => this.handleChartHover(a,b) } />
+            chartData={chart[selectedChart]} 
+            onChartHover={ (a,b) => this.handleChartHover(a,b) } />
           )}
         </div>
       </React.Fragment>
@@ -74,12 +47,12 @@ class LineChartContainer extends React.Component {
 
 LineChartContainer.propTypes = {
   chart: PropTypes.shape({
-    day: PropTypes.arrayOf(PropTypes.string),
-    week: PropTypes.arrayOf(PropTypes.string),
-    month: PropTypes.arrayOf(PropTypes.string),
-    threeMonth: PropTypes.arrayOf(PropTypes.string),
-    year: PropTypes.arrayOf(PropTypes.string),
-    fiveYear: PropTypes.arrayOf(PropTypes.string)
+    day: PropTypes.arrayOf(PropTypes.object),
+    week: PropTypes.arrayOf(PropTypes.object),
+    month: PropTypes.arrayOf(PropTypes.object),
+    threeMonth: PropTypes.arrayOf(PropTypes.object),
+    year: PropTypes.arrayOf(PropTypes.object),
+    fiveYear: PropTypes.arrayOf(PropTypes.object)
   }).isRequired
 };
 

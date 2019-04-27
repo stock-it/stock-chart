@@ -53,7 +53,6 @@ class App extends React.Component {
     const { stockId } = this.props.match ? this.props.match.params : { stockId: null };
     API.get(`api/quotes/${stockId || 'TSLA'}/${interval}`)
       .then(response => {
-        console.log(response);
         const { chartData } = this.state;
         const prices = response.data.map(val => val.price);
         chartData[interval] = prices;
@@ -73,6 +72,16 @@ class App extends React.Component {
     this.setState({
       currentPrice: activePoint ? activePoint.price : null
     })
+  }
+
+  chartify(chartObj) {
+    var newObj = {};
+    for (var key in chartObj) {
+      newObj[key] = chartObj[key].map((chart, index) => {
+        return {x: index, y: Number(chart)}
+      })
+    }
+    return newObj;
   }
 
   render() {
@@ -110,7 +119,7 @@ class App extends React.Component {
 
         {chartData[selectedFilter] && (
         <LineChartContainer 
-          chart={chartData} 
+          chart={this.chartify(chartData)} 
           selectedChart={selectedFilter} 
           changePrice={price => this.changeCurrentPrice(price)}
         />
