@@ -11,12 +11,16 @@ class App extends React.Component {
     super(props);
 
     this.state = {
+      stockId: null,
       chartData: null,
-      stockInfo: null,
       averageStock: null,
       changePercent: null,
       selectedFilter: 'day',
-      currentPrice: null
+      currentPrice: null,
+      stockCompany: null,
+      relatedTags: [],
+      noOfOwners: null,
+      recommendationPercent: null,
     };
   }
   
@@ -25,11 +29,24 @@ class App extends React.Component {
     const { stockId } = this.props.match ? this.props.match.params : { stockId: null };
     API.get((stockId && `/api/stocks/${stockId}`) || `/api/stocks/TSLA`)
     .then((response) => {
+      const {stockId,
+        stockCompany,
+        relatedTags,
+        noOfOwners,
+        recommendationPercent,
+        averageStock,
+        changePercent,
+        stockData
+      } = response.data
       this.setState({
-        stockInfo: response.data.stockInfo,
-        chartData: response.data.stockData,
-        averageStock: response.data.averageStock,
-        changePercent: response.data.changePercent
+        stockId,
+        stockCompany,
+        relatedTags,
+        noOfOwners,
+        recommendationPercent,
+        averageStock,
+        changePercent,
+        chartData: stockData,
       })
     })
   }
@@ -47,23 +64,37 @@ class App extends React.Component {
   }
 
   render() {
-    const { chartData, stockInfo, averageStock, changePercent, selectedFilter, currentPrice } = this.state;
+    const { chartData,
+      relatedTags,
+      stockCompany,
+      noOfOwners,
+      recommendationPercent,
+      stockId,
+      averageStock,
+      changePercent,
+      selectedFilter,
+      currentPrice,
+    } = this.state;
     return (
       <div id="stock-chart-container">
-        {stockInfo && (<TagContainer tags={stockInfo.relatedTags} />)}
+        {stockId && (<TagContainer tags={relatedTags} />)}
 
-        {stockInfo && (
+        {stockId && (
         <CompanyInfo 
-          companyName={stockInfo.stockCompany} 
-          noOfOwners={stockInfo.noOfOwners}
-          recommendation={stockInfo.recommendationPercent} />
+          companyName={stockCompany} 
+          noOfOwners={noOfOwners}
+          recommendation={recommendationPercent}
+        />
         )}
 
-        {stockInfo && (
-        <StockInfo 
-        averageStock={averageStock}
-        changePercent={changePercent}
-        currentPrice={currentPrice} />)}
+        {stockId && 
+        (
+          <StockInfo 
+            averageStock={averageStock}
+            changePercent={changePercent}
+            currentPrice={currentPrice} 
+          />
+          )}
 
         {chartData && (
         <LineChartContainer 
