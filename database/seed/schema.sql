@@ -32,7 +32,7 @@ ALTER TABLE stock_quotes
 ADD CONSTRAINT constraint_fk  FOREIGN KEY (ticker) REFERENCES stock_info (ticker);
 
 CREATE INDEX ticker_idx ON stock_info (ticker);
-CREATE INDEX ticker_idx ON stock_quotes (ticker);
+CREATE INDEX ticker_quote_idx ON stock_quotes (ticker);
 CREATE INDEX label_idx ON stock_quotes (label);
 
 ANALYZE;

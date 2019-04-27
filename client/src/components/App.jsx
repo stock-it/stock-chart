@@ -1,11 +1,9 @@
 import React from 'react';
-// import axios from 'axios';
 import LineChartContainer from './LineChartContainer';
 import TimeFilter from './TimeFilter';
 import StockInfo from './StockInfo';
 import CompanyInfo from './CompanyInfo';
 import TagContainer from './TagContainer';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import API from './api';
 
 class App extends React.Component {

@@ -3,3 +3,4 @@ database/dataGeneration/quoteData.csv.gz
 database/dataGeneration/stockData.csv.gz
 quoteData.csv
 .vscode/
+newrelic.js

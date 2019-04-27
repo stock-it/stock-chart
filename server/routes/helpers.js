@@ -31,12 +31,12 @@ module.exports = {
       recommendationPercent: recommendation_percent,
     },
     stockData: {
-      day,
-      week,
-      month,
-      threeMonth,
-      year,
-      fiveYear,
+      day: day.rows.map(val => val.price),
+      week: week.rows.map(val => val.price),
+      month: month.rows.map(val => val.price),
+      threeMonth: threeMonth.rows.map(val => val.price),
+      year: year.rows.map(val => val.price),
+      fiveYear: fiveYear.rows.map(val => val.price)
     },
     averageStock: average_stock,
     changePercent: change_percent,

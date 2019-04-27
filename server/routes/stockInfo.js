@@ -9,19 +9,26 @@ router.get('/:stockId', async (req, res) => {
   const stockQuery = `SELECT * from stock_info WHERE ticker = $1`;
   const stockData = await db.query(stockQuery, [req.params.stockId]);
 
-  const quoteQuery = `SELECT price, label from stock_quotes WHERE ticker = $1`;
-  const quoteData = await db.query(quoteQuery, [req.params.stockId]);
-  
-  const formattedData = await helpers.combineResponses(stockData.rows[0], 
-    quoteData.rows.reduce((acc, cv) => {
-      let interval = helpers.timeFrames[cv.label];
-      if (acc[interval]) acc[interval].push(cv.price);
-      else acc[interval] = [cv.price];
-      return acc;
-    }, {})
-  );
-
-  res.send(formattedData);
+  const quoteQuery = `SELECT price from stock_quotes WHERE ticker = $1 AND label = $2`;
+  const day = await db.query(quoteQuery, [req.params.stockId, 'daily'])
+  const week = await db.query(quoteQuery, [req.params.stockId, 'weekly']);
+  const month = await db.query(quoteQuery, [req.params.stockId, 'monthly']);
+  const threeMonth = await db.query(quoteQuery, [req.params.stockId, 'Quarterly']);
+  const year = await db.query(quoteQuery, [req.params.stockId, 'Annually']);
+  const fiveYear = await db.query(quoteQuery, [req.params.stockId, 'Quinquennial']);
+  if (!day.rows.length) res.send('Error: Please choose a valid stock');
+  else {
+    const formattedData = await helpers.combineResponses(stockData.rows[0], await {
+      day,
+      week,
+      month,
+      threeMonth,
+      year,
+      fiveYear,
+    }
+    );
+    res.send(formattedData);
+  }
 });
 
 router.post('/', async (req, res) => {
