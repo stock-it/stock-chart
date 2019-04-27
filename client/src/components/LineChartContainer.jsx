@@ -6,7 +6,6 @@ import ToolTip from './ToolTip';
 class LineChartContainer extends React.Component {
   constructor(props) {
     super(props);
-    
     const { chart, selectedChart } = this.props;
     this.coordinatedData = this.chartify(chart);
     this.state = {

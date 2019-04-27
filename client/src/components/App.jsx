@@ -12,7 +12,7 @@ class App extends React.Component {
 
     this.state = {
       stockId: null,
-      chartData: null,
+      chartData: {},
       averageStock: null,
       changePercent: null,
       selectedFilter: 'day',
@@ -29,33 +29,45 @@ class App extends React.Component {
     const { stockId } = this.props.match ? this.props.match.params : { stockId: null };
     API.get((stockId && `/api/stocks/${stockId}`) || `/api/stocks/TSLA`)
     .then((response) => {
-      const {stockId,
-        stockCompany,
-        relatedTags,
-        noOfOwners,
-        recommendationPercent,
-        averageStock,
-        changePercent,
-        stockData
+      const {ticker,
+        company,
+        related_tags,
+        num_owners,
+        recommendation_percent,
+        average_stock,
+        change_percent,
       } = response.data
       this.setState({
-        stockId,
-        stockCompany,
-        relatedTags,
-        noOfOwners,
-        recommendationPercent,
-        averageStock,
-        changePercent,
-        chartData: stockData,
+        stockId: ticker,
+        stockCompany: company,
+        relatedTags: related_tags,
+        noOfOwners: num_owners,
+        recommendationPercent: recommendation_percent,
+        averageStock: average_stock,
+        changePercent: change_percent,
+      }, this.getPriceData('day'))
+    });
+  }
+
+  getPriceData(interval) {
+    const { stockId } = this.props.match ? this.props.match.params : { stockId: null };
+    API.get(`api/quotes/${stockId || 'TSLA'}/${interval}`)
+      .then(response => {
+        console.log(response);
+        const { chartData } = this.state;
+        const prices = response.data.map(val => val.price);
+        chartData[interval] = prices;
+        this.setState({
+          chartData,
+          selectedFilter: interval,
+        })
       })
-    })
   }
 
   changeSelectedFilter(e) {
-    this.setState({
-      selectedFilter: e.target.id
-    })
+    this.getPriceData(e.target.id);
   }
+
 
   changeCurrentPrice(activePoint) {
     this.setState({
@@ -96,11 +108,12 @@ class App extends React.Component {
           />
           )}
 
-        {chartData && (
+        {chartData[selectedFilter] && (
         <LineChartContainer 
-        chart={chartData} 
-        selectedChart={selectedFilter} 
-        changePrice={price => this.changeCurrentPrice(price)} />
+          chart={chartData} 
+          selectedChart={selectedFilter} 
+          changePrice={price => this.changeCurrentPrice(price)}
+        />
         )}
 
         <TimeFilter changeSelectedFilter={e => this.changeSelectedFilter(e)} />

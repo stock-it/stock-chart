@@ -1,11 +1,11 @@
 module.exports = {
   timeFrames: {
-    daily: 'day',
-    weekly: 'week',
-    monthly: 'month',
-    Quarterly: 'threeMonth',
-    Annually: 'year',
-    Quinquennial: 'fiveYear',
+    day: 'daily',
+    week: 'weekly',
+    month: 'monthly',
+    threeMonth: 'Quarterly',
+    year: 'Annually',
+    fiveYear: 'Quinquennial',
   },
   combineResponses: ({
     ticker,
