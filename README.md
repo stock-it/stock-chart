@@ -30,8 +30,8 @@ From within the root directory:
 ```sh
 npm install
 npm run build
-npm run dataGen
-npm run seed
+npm run generate
+npm run seed:postgres
 npm run start:server
 ```
 
@@ -41,8 +41,8 @@ The stock-chart module supports CRUD operations to the two main data sources it 
 
 | Data Source             | Sub-fields                                    | Base API                 |
 |-----------------------|:----------------------------------------------|:----------------:|
-| Ticker Information      | Company name, Average price, owners, etc.     | /api/:stockId/info/CRUD  |
-| Price Quotes            | Time-stamped price quotes across set intervals| /api/:stockId/quotes|
+| Ticker Information      | Company name, Average price, owners, etc.     | /api/stocks/:stockId  |
+| Price Quotes            | Time-stamped price quotes across set intervals| /api/quotes/:stockId |
 
 The CRUD operations supported for each data source are below:
 
@@ -50,19 +50,19 @@ The CRUD operations supported for each data source are below:
 
 | CRUD Operation | API | Notes |
 |----------------|:---:| ----- |
-| CREATE | /api/stocks/create| |
-| READ | /api/:stockId | |
-| UPDATE | /api/:stockId/:field| If a specific field is not desired, /:field can be dropped from the api route|
-| DELETE | /api/stockId/: field| If a specific field is not desired, /:field can be dropped from the api route|
+| CREATE | /api/stocks| |
+| READ | /stocks/:stockId | |
+| UPDATE | /api/stocks/:stockId| |
+| DELETE | /api/stocks/:stockId| |
 
 ### Price Quotes
 
 | CRUD Operation | API | Notes |
 |----------------|:---:| ----- |
-| CREATE | /api/quotes/create| |
-| READ | /api/:stockId/quotes/:quoteId | If a specific field is not desired, /:quoteId can be dropped from the api route|
-| UPDATE | /api/quotes/:quoteId/:field| If a specific field or quoteId is not desired, /:quoteId and/or /:field can be dropped from the api route|
-| DELETE | /api/quotes/:quoteId/:field| If a specific field or quoteId is not desired, /:quoteId and/or /:field can be dropped from the api route|
+| CREATE | /api/quotes| |
+| READ | /api/quotes/:stockId/:label | If a specific time-interval (e.g., daily, weekly, monthly) can be dropped from the endpoint and all quotes will be returned|
+| UPDATE | /api/quotes/:stockId/:quoteId| If a specific quoteId is not desired, /:quoteId can be dropped from the path|
+| DELETE | /api/quotes/:stockId/:quoteId| If a specific quoteId is not desired, /:quoteId can be dropped from the api route|
 
 
 

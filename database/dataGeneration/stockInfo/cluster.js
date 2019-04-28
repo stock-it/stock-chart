@@ -4,7 +4,7 @@ const generateData = require('./stockGenerate.js');
 
 process.env.UV_THREADPOOL_SIZE = 50;
 numCPUs = 8;
-let numIndices = 625000;
+let numIndices = 6250;
 
 if (cluster.isMaster) {
   masterProcess();
