@@ -11,12 +11,16 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      chartData: null,
-      stockInfo: null,
+      stockId: null,
+      chartData: {},
       averageStock: null,
       changePercent: null,
       selectedFilter: 'day',
-      currentPrice: null
+      currentPrice: null,
+      stockCompany: null,
+      relatedTags: [],
+      noOfOwners: null,
+      recommendationPercent: null,
     };
   }
   
@@ -25,20 +29,44 @@ class App extends React.Component {
     const { stockId } = this.props.match ? this.props.match.params : { stockId: null };
     API.get((stockId && `/api/stocks/${stockId}`) || `/api/stocks/TSLA`)
     .then((response) => {
+      const {ticker,
+        company,
+        related_tags,
+        num_owners,
+        recommendation_percent,
+        average_stock,
+        change_percent,
+      } = response.data
       this.setState({
-        stockInfo: response.data.stockInfo,
-        chartData: response.data.stockData,
-        averageStock: response.data.averageStock,
-        changePercent: response.data.changePercent
+        stockId: ticker,
+        stockCompany: company,
+        relatedTags: related_tags,
+        noOfOwners: num_owners,
+        recommendationPercent: recommendation_percent,
+        averageStock: average_stock,
+        changePercent: change_percent,
+      }, this.getPriceData('day'))
+    });
+  }
+
+  getPriceData(interval) {
+    const { stockId } = this.props.match ? this.props.match.params : { stockId: null };
+    API.get(`api/quotes/${stockId || 'TSLA'}/${interval}`)
+      .then(response => {
+        const { chartData } = this.state;
+        const prices = response.data.map(val => val.price);
+        chartData[interval] = prices;
+        this.setState({
+          chartData,
+          selectedFilter: interval,
+        })
       })
-    })
   }
 
   changeSelectedFilter(e) {
-    this.setState({
-      selectedFilter: e.target.id
-    })
+    this.getPriceData(e.target.id);
   }
+
 
   changeCurrentPrice(activePoint) {
     this.setState({
@@ -46,30 +74,55 @@ class App extends React.Component {
     })
   }
 
+  chartify(chartObj) {
+    var newObj = {};
+    for (var key in chartObj) {
+      newObj[key] = chartObj[key].map((chart, index) => {
+        return {x: index, y: Number(chart)}
+      })
+    }
+    return newObj;
+  }
+
   render() {
-    const { chartData, stockInfo, averageStock, changePercent, selectedFilter, currentPrice } = this.state;
+    const { chartData,
+      relatedTags,
+      stockCompany,
+      noOfOwners,
+      recommendationPercent,
+      stockId,
+      averageStock,
+      changePercent,
+      selectedFilter,
+      currentPrice,
+    } = this.state;
     return (
       <div id="stock-chart-container">
-        {stockInfo && (<TagContainer tags={stockInfo.relatedTags} />)}
+        {stockId && (<TagContainer tags={relatedTags} />)}
 
-        {stockInfo && (
+        {stockId && (
         <CompanyInfo 
-          companyName={stockInfo.stockCompany} 
-          noOfOwners={stockInfo.noOfOwners}
-          recommendation={stockInfo.recommendationPercent} />
+          companyName={stockCompany} 
+          noOfOwners={noOfOwners}
+          recommendation={recommendationPercent}
+        />
         )}
 
-        {stockInfo && (
-        <StockInfo 
-        averageStock={averageStock}
-        changePercent={changePercent}
-        currentPrice={currentPrice} />)}
+        {stockId && 
+        (
+          <StockInfo 
+            averageStock={averageStock}
+            changePercent={changePercent}
+            currentPrice={currentPrice} 
+          />
+          )}
 
-        {chartData && (
+        {chartData[selectedFilter] && (
         <LineChartContainer 
-        chart={chartData} 
-        selectedChart={selectedFilter} 
-        changePrice={price => this.changeCurrentPrice(price)} />
+          chart={this.chartify(chartData)} 
+          selectedChart={selectedFilter} 
+          changePrice={price => this.changeCurrentPrice(price)}
+        />
         )}
 
         <TimeFilter changeSelectedFilter={e => this.changeSelectedFilter(e)} />

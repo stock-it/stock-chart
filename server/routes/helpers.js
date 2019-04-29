@@ -1,11 +1,11 @@
 module.exports = {
   timeFrames: {
-    daily: 'day',
-    weekly: 'week',
-    monthly: 'month',
-    Quarterly: 'threeMonth',
-    Annually: 'year',
-    Quinquennial: 'fiveYear',
+    day: 'daily',
+    week: 'weekly',
+    month: 'monthly',
+    threeMonth: 'Quarterly',
+    year: 'Annually',
+    fiveYear: 'Quinquennial',
   },
   combineResponses: ({
     ticker,
@@ -24,12 +24,12 @@ module.exports = {
     fiveYear,
   }) => ({
     stockId: ticker,
-    stockInfo: {
-      stockCompany: company,
-      relatedTags: related_tags,
-      noOfOwners: num_owners,
-      recommendationPercent: recommendation_percent,
-    },
+    stockCompany: company,
+    relatedTags: related_tags,
+    noOfOwners: num_owners,
+    recommendationPercent: recommendation_percent,
+    averageStock: average_stock,
+    changePercent: change_percent,
     stockData: {
       day: day.rows.map(val => val.price),
       week: week.rows.map(val => val.price),
@@ -38,7 +38,5 @@ module.exports = {
       year: year.rows.map(val => val.price),
       fiveYear: fiveYear.rows.map(val => val.price)
     },
-    averageStock: average_stock,
-    changePercent: change_percent,
   })
 };
