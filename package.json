@@ -11,8 +11,7 @@
     "node": ">=8.15.0"
   },
   "scripts": {
-    "start": "webpack --mode development --watch",
-    "start:server": "nodemon server/index.js",
+    "start": "node server",
     "start:database": "node run database.js",
     "build": "webpack --mode production",
     "generate": "npm run generate:stockInfo && npm run generate:quoteInfo",
