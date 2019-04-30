@@ -4,3 +4,4 @@ database/dataGeneration/stockData.csv.gz
 quoteData.csv
 .vscode/
 newrelic.js
+newrelic_agent.log
