@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 require('newrelic');
+require('dotenv').config();
 const express = require('express');
 const { join } = require('path');
 const bodyParser = require('body-parser');

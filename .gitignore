@@ -5,3 +5,5 @@ quoteData.csv
 .vscode/
 newrelic.js
 newrelic_agent.log
+*.env
+*.csv
