@@ -8,10 +8,10 @@ const cors = require('cors');
 const mountRoutes = require('./routes');
 
 
-
+const { PORT } = process.env
 
 const app = express();
-const port = 4005;
+const port = PORT || 8080;
 app.use(cors());
 mountRoutes(app);
 
