@@ -15,8 +15,8 @@ const port = PORT || 8080;
 app.use(cors());
 mountRoutes(app);
 
-app.get('/loaderio-7fb95d5957b402e3c007aa6a4fdcb4fb',(req, res) => {
-  res.send('loaderio-7fb95d5957b402e3c007aa6a4fdcb4fb');
+app.get('/loaderio-ef93a9ed5f0210211846370e21d3bf3a',(req, res) => {
+  res.send('loaderio-ef93a9ed5f0210211846370e21d3bf3a');
 });
 
 app.use(bodyParser.json());
