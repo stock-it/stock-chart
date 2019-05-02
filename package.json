@@ -11,8 +11,8 @@
     "node": ">=8.15.0"
   },
   "scripts": {
-    "start": "webpack --mode development --watch",
-    "start:server": "nodemon server/index.js",
+    "start": "node server",
+    "start:database": "node run database.js",
     "build": "webpack --mode production",
     "generate": "npm run generate:stockInfo && npm run generate:quoteInfo",
     "generate:stockInfo": "node database/dataGeneration/stockInfo/cluster.js",
@@ -31,6 +31,7 @@
     "babel-runtime": "^6.26.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
+    "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "express-promise-router": "^3.0.3",
     "faker": "^4.1.0",

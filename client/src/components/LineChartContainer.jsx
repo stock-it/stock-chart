@@ -52,7 +52,7 @@ LineChartContainer.propTypes = {
     month: PropTypes.arrayOf(PropTypes.object),
     threeMonth: PropTypes.arrayOf(PropTypes.object),
     year: PropTypes.arrayOf(PropTypes.object),
-    fiveYear: PropTypes.arrayOf(PropTypes.object)
+    fiveYear: PropTypes.arrayOf(PropTypes.objectg)
   }).isRequired
 };
 
